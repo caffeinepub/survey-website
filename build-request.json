@@ -1,0 +1,45 @@
+{
+  "kind": "build_request",
+  "title": "Remove survey embed and replace with static placeholder on Survey page",
+  "priority": "normal",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "text": "In SurveyPage.tsx, remove the CPX Research iframe embed (app_id=30743), any associated survey scripts, API calls, or survey widget loading logic. Replace the survey content area with a simple static message: 'Surveys are currently unavailable. Please check back later.' Preserve the existing page layout, header section, card container styling, and overall design.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-7"
+        ],
+        "quotes": [
+          "Remove the survey form and the message that says: 'Unfortunately we could not find a survey for your profile. Try again in a few hours.'",
+          "Replace that section with a simple placeholder message like: 'Surveys are currently unavailable. Please check back later.'",
+          "Make sure no survey script, API call, or survey widget is loading in the background.",
+          "Keep the Survey page layout, header, and design the same."
+        ]
+      },
+      "acceptanceCriteria": [
+        "The CPX Research iframe is no longer rendered on the Survey page.",
+        "No survey-related scripts, API calls, or widget initializations occur when visiting the Survey page.",
+        "The text 'Unfortunately we could not find a survey for your profile. Try again in a few hours.' does not appear anywhere on the page.",
+        "The placeholder text 'Surveys are currently unavailable. Please check back later.' is displayed in the survey content area.",
+        "The Survey page header, card container, and overall layout remain visually unchanged.",
+        "The page loads without any JavaScript errors in the browser console."
+      ]
+    }
+  ],
+  "constraints": [
+    "Do not delete or rename the SurveyPage.tsx file or its route.",
+    "Do not modify the Header, Footer, or Layout components.",
+    "Do not alter the page's visual design, color scheme, or typography."
+  ],
+  "nonGoals": [
+    "Adding any new survey provider or integration.",
+    "Implementing backend survey logic.",
+    "Modifying any page other than SurveyPage.tsx."
+  ],
+  "imageRequirements": {
+    "required": [],
+    "edits": []
+  }
+}

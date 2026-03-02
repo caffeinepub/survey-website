@@ -1,0 +1,24 @@
+{
+  "kind": "feature_evidence_report",
+  "features": [
+    {
+      "featureId": "feature-in-surveypage-tsx-remove-the-cpx-research-iframe-embed-app-id-30743-any-associated-survey-scripts-api-calls-or-survey-widget-loading-logic-replace-the-survey-content-area-with-a-simple-static-message-surveys-are-currently-unavailable-please-check-back-later-preserve-the-existing-page-layout-header-section-card-container-styling-and-overall-design",
+      "featureTitle": "In SurveyPage.tsx, remove the CPX Research iframe embed (app_id=30743), any associated survey scripts, API calls, or survey widget loading logic. Replace the survey content area with a simple static message: 'Surveys are currently unavailable. Please check back later.' Preserve the existing page layout, header section, card container styling, and overall design.",
+      "files": [
+        "frontend/src/pages/SurveyPage.tsx"
+      ],
+      "components": [
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-1"
+      ],
+      "confidence": "high"
+    }
+  ]
+}

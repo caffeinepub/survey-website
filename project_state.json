@@ -1,0 +1,25 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 3,
+  "summary": "Website project with a Survey page. Survey content has been removed and replaced with a static placeholder message. No survey scripts, API calls, or widgets load on the Survey page.",
+  "architectural_notes": [
+    "Survey page retains its layout, header, and design but displays a static placeholder: 'Surveys are currently unavailable. Please check back later.' No survey scripts, API calls, or widgets should load on this page."
+  ],
+  "known_issues": [],
+  "isFixRequest": false,
+  "existing_features": [
+    {
+      "id": "feature-in-surveypage-tsx-remove-the-cpx-research-iframe-embed-app-id-30743-any-associated-survey-scripts-api-calls-or-survey-widget-loading-logic-replace-the-survey-content-area-with-a-simple-static-message-surveys-are-currently-unavailable-please-check-back-later-preserve-the-existing-page-layout-header-section-card-container-styling-and-overall-design",
+      "title": "In SurveyPage.tsx, remove the CPX Research iframe embed (app_id=30743), any associated survey scripts, API calls, or survey widget loading logic. Replace the survey content area with a simple static message: 'Surveys are currently unavailable. Please check back later.' Preserve the existing page layout, header section, card container styling, and overall design.",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [],
+  "gameProjectType": "none",
+  "projectName": "Remove survey embed and replace with static placeholder on Survey page",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}

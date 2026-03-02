@@ -1,0 +1,24 @@
+{
+  "kind": "spec_vs_diff_report",
+  "version": "1.0",
+  "generatedAt": "2026-03-02T13:08:07.626Z",
+  "summary": "The diff implements REQ-1 correctly. SurveyPage.tsx has been rewritten to remove the CPX Research iframe, all survey scripts, API calls, and widget logic. It now displays the static placeholder message 'Surveys are currently unavailable. Please check back later.' with a clipboard icon, while preserving the page layout, header section, and card container styling. All acceptance criteria appear to be met.",
+  "missing_requirements": [],
+  "hallucinated_features": [
+    {
+      "description": "A ClipboardList icon (from lucide-react) was added alongside the placeholder text in the survey content area.",
+      "reason": "The build request only asked for the static text 'Surveys are currently unavailable. Please check back later.' to be displayed. No icon was specified in the requirements or acceptance criteria.",
+      "evidence": [
+        "frontend/src/pages/SurveyPage.tsx"
+      ]
+    }
+  ],
+  "confidence": 0.85,
+  "changed_files": [
+    "frontend-file-summaries.txt",
+    "frontend/src/hooks/useInternetIdentity.ts",
+    "frontend/src/main.tsx",
+    "frontend/src/pages/SurveyPage.tsx",
+    "project_state.json"
+  ]
+}

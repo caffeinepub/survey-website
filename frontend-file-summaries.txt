@@ -1,0 +1,14 @@
+{
+  "frontend/src/App.tsx": "Main application component that sets up routing with TanStack Router, theme provider, and toast notifications for all pages.",
+  "frontend/src/components/Layout.tsx": "Layout wrapper component that provides consistent header, footer, and main content structure across all pages.",
+  "frontend/src/components/Header.tsx": "Responsive navigation header with Surearn Survey logo image, desktop menu, mobile sheet menu, and active route highlighting with proper logo scaling for mobile and desktop.",
+  "frontend/src/components/Footer.tsx": "Footer component with site navigation, legal links, and attribution to caffeine.ai with love icon.",
+  "frontend/src/pages/HomePage.tsx": "Landing page with hero section, feature cards showcasing platform benefits, and call-to-action sections.",
+  "frontend/src/pages/SurveyPage.tsx": "Survey page that preserves the original layout, header, and card container, but replaces the CPX Research iframe with a static placeholder message (\"Surveys are currently unavailable. Please check back later.\") and a clipboard icon — no scripts, API calls, or survey widgets are loaded.",
+  "frontend/src/pages/AboutPage.tsx": "About page describing company mission, values, and platform purpose with structured card layouts.",
+  "frontend/src/pages/PrivacyPage.tsx": "Comprehensive privacy policy page with structured sections covering data collection, usage, security, and user rights.",
+  "frontend/src/pages/ContactPage.tsx": "Contact page with form validation, contact information cards, and business hours display.",
+  "frontend/src/index.css": "Global styles with OKLCH color system featuring teal/blue palette for light and dark modes, plus grid pattern utility.",
+  "frontend/src/hooks/useQueries.ts": "Empty placeholder file for future React Query hooks when backend functionality is added.",
+  "frontend/src/hooks/useEditor.ts": "Placeholder editor initialization hook with no-op implementation."
+}

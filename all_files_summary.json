@@ -1,0 +1,22 @@
+{
+  "backend/main.mo": "Empty Motoko actor serving as the backend entry point with no implemented methods.",
+  "feature_evidence.json": "Feature evidence report documenting the requirement to replace the CPX Research iframe in SurveyPage.tsx with a static unavailability message while preserving the page layout.",
+  "frontend-file-summaries.txt": "JSON map of frontend source files to short descriptions summarizing each component's purpose and implementation.",
+  "frontend/index.html": "Root HTML entry point that mounts the React app into a div with id 'root' and loads the main TypeScript module.",
+  "frontend/src/App.tsx": "Main React application component that configures TanStack Router with all page routes, wraps the app in ThemeProvider, and renders a Toaster for notifications.",
+  "frontend/src/components/Footer.tsx": "Footer component with a four-column grid containing branding, navigation links, legal links, and a connect section, plus a caffeine.ai attribution line.",
+  "frontend/src/components/Header.tsx": "Sticky navigation header with the Surearn Survey logo, desktop nav links with active-route highlighting, a 'Start Survey' button, and a mobile sheet menu.",
+  "frontend/src/components/Layout.tsx": "Layout wrapper that composes Header, a flex-growing main content Outlet, and Footer into a full-height page structure.",
+  "frontend/src/hooks/useActor.ts": "React Query hook that creates and caches an ICP backend actor, using the current Internet Identity for authenticated calls and invalidating dependent queries when the actor changes.",
+  "frontend/src/hooks/useInternetIdentity.ts": "Context provider and hook for Internet Identity authentication, managing AuthClient lifecycle, login/logout flow, and exposing identity and status to the component tree.",
+  "frontend/src/hooks/useQueries.ts": "Empty placeholder file reserved for future React Query hooks once backend methods are implemented.",
+  "frontend/src/index.css": "Global Tailwind CSS stylesheet defining OKLCH-based color tokens for light and dark themes and a bg-grid-pattern utility class.",
+  "frontend/src/main.tsx": "React application entry point that wraps the app with QueryClientProvider and InternetIdentityProvider before rendering into the DOM root.",
+  "frontend/src/pages/AboutPage.tsx": "Renders the About page for SurveyHub, displaying company description cards and a grid of four core values (Mission, User-Centric, Innovation, Quality).",
+  "frontend/src/pages/ContactPage.tsx": "Renders the Contact page with a controlled form (name, email, subject, message) that simulates submission via a toast notification, alongside static contact info (email, phone, address).",
+  "frontend/src/pages/HomePage.tsx": "Renders the marketing home page with a hero section, a four-feature grid (Fast, Analytics, Secure, Reliable), and a CTA section with navigation to the survey and about pages.",
+  "frontend/src/pages/PrivacyPage.tsx": "Renders the Privacy Policy page as a series of titled sections covering data collection, usage, sharing, security, user rights, retention, cookies, children's privacy, and policy changes.",
+  "frontend/src/pages/SurveyPage.tsx": "Renders the Survey page with a static placeholder message ('Surveys are currently unavailable. Please check back later.') inside a styled card container, with no active survey embed or API calls.",
+  "frontend/tailwind.config.js": "Configures Tailwind CSS with dark mode, custom OKLCH-based color tokens, extended border radii, accordion keyframe animations, and the typography, container-queries, and animate plugins.",
+  "project_state.json": "Tracks project state at version 3, documenting that the CPX Research survey embed was removed from SurveyPage.tsx and replaced with a static unavailability message while preserving the page layout."
+}

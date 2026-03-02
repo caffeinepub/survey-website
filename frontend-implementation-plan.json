@@ -1,0 +1,26 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Remove survey embed and replace with static placeholder on Survey page",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "summary": "Remove CPX Research iframe embed and replace with static placeholder message while preserving page layout and design",
+      "acceptanceCriteria": [
+        "The CPX Research iframe is no longer rendered on the Survey page.",
+        "No survey-related scripts, API calls, or widget initializations occur when visiting the Survey page.",
+        "The text 'Unfortunately we could not find a survey for your profile. Try again in a few hours.' does not appear anywhere on the page.",
+        "The placeholder text 'Surveys are currently unavailable. Please check back later.' is displayed in the survey content area.",
+        "The Survey page header, card container, and overall layout remain visually unchanged.",
+        "The page loads without any JavaScript errors in the browser console."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/SurveyPage.tsx",
+          "operation": "modify",
+          "description": "Remove the CPX Research iframe (app_id=30743) and any associated survey initialization logic. Replace the iframe content with a centered static text message: 'Surveys are currently unavailable. Please check back later.' Keep the existing card container, header section, and all styling intact to preserve the visual layout and design."
+        }
+      ]
+    }
+  ]
+}
