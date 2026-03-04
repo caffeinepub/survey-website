@@ -1,5 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle2, ClipboardX } from "lucide-react";
+import { useEffect, useState } from "react";
 
 interface SurveyRecord {
   name: string;
@@ -8,18 +9,19 @@ interface SurveyRecord {
   status: string;
 }
 
-function getSurveyHistory(): SurveyRecord[] {
-  try {
-    return JSON.parse(
-      localStorage.getItem("surveyHistory") ?? "[]",
-    ) as SurveyRecord[];
-  } catch {
-    return [];
-  }
-}
-
 export default function SurveyHistoryPage() {
-  const history = getSurveyHistory();
+  const [history, setHistory] = useState<SurveyRecord[]>([]);
+
+  useEffect(() => {
+    try {
+      const data = JSON.parse(
+        localStorage.getItem("surveyHistory") ?? "[]",
+      ) as SurveyRecord[];
+      setHistory(data);
+    } catch {
+      setHistory([]);
+    }
+  }, []);
 
   return (
     <div className="container py-12 md:py-16">
@@ -43,7 +45,7 @@ export default function SurveyHistoryPage() {
               <p className="text-lg font-medium text-gray-500">
                 No Survey History Found
               </p>
-              <p className="text-sm text-gray-400 max-w-xs">
+              <p className="max-w-xs text-sm text-gray-400">
                 Complete a survey on the Survey page and it will appear here.
               </p>
             </div>
@@ -96,7 +98,7 @@ export default function SurveyHistoryPage() {
                             {record.time}
                           </td>
                           <td className="px-6 py-4">
-                            <Badge className="bg-emerald-50 text-emerald-600 border border-emerald-200 hover:bg-emerald-100 flex items-center gap-1.5 w-fit">
+                            <Badge className="flex w-fit items-center gap-1.5 border border-emerald-200 bg-emerald-50 text-emerald-600 hover:bg-emerald-100">
                               <CheckCircle2 className="h-3 w-3" />
                               {record.status}
                             </Badge>
@@ -109,17 +111,17 @@ export default function SurveyHistoryPage() {
               </div>
 
               {/* Mobile card list */}
-              <div className="md:hidden divide-y divide-gray-100">
+              <div className="divide-y divide-gray-100 md:hidden">
                 {history.map((record, idx) => (
                   <div
                     key={`${record.name}-${record.date}-${record.time}-${idx}`}
-                    className="px-6 py-5 flex flex-col gap-3"
+                    className="flex flex-col gap-3 px-6 py-5"
                   >
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-semibold text-gray-900">
                         {record.name}
                       </span>
-                      <Badge className="bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center gap-1.5">
+                      <Badge className="flex items-center gap-1.5 border border-emerald-200 bg-emerald-50 text-emerald-600">
                         <CheckCircle2 className="h-3 w-3" />
                         {record.status}
                       </Badge>

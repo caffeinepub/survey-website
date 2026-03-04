@@ -1,9 +1,20 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "@tanstack/react-router";
 import { BarChart3, CheckCircle2, Shield, Zap } from "lucide-react";
+import { useEffect, useState } from "react";
 
 export default function HomePage() {
   const navigate = useNavigate();
+  const [completedCount, setCompletedCount] = useState(0);
+
+  useEffect(() => {
+    try {
+      const history = JSON.parse(localStorage.getItem("surveyHistory") ?? "[]");
+      setCompletedCount(Array.isArray(history) ? history.length : 0);
+    } catch {
+      setCompletedCount(0);
+    }
+  }, []);
 
   const features = [
     {
@@ -53,7 +64,7 @@ export default function HomePage() {
                 size="lg"
                 onClick={() => navigate({ to: "/survey" })}
                 data-ocid="home.primary_button"
-                className="text-base bg-cyan-500 text-white hover:bg-cyan-600 font-semibold border-0"
+                className="border-0 bg-cyan-500 text-base font-semibold text-white hover:bg-cyan-600"
               >
                 Start a Survey
               </Button>
@@ -62,11 +73,19 @@ export default function HomePage() {
                 variant="outline"
                 onClick={() => navigate({ to: "/about" })}
                 data-ocid="home.secondary_button"
-                className="text-base border-gray-300 text-gray-700 hover:bg-gray-50"
+                className="border-gray-300 text-base text-gray-700 hover:bg-gray-50"
               >
                 Learn More
               </Button>
             </div>
+
+            {/* Dynamic survey completion count */}
+            <p
+              data-ocid="home.survey_count"
+              className="mt-4 text-sm text-gray-400"
+            >
+              {completedCount} survey{completedCount !== 1 ? "s" : ""} completed
+            </p>
           </div>
         </div>
       </section>
@@ -89,7 +108,7 @@ export default function HomePage() {
               {features.map((feature) => (
                 <div
                   key={feature.title}
-                  className="rounded-xl p-6 border border-gray-100 shadow-sm bg-white transition-all duration-300 hover:shadow-md hover:-translate-y-1"
+                  className="rounded-xl border border-gray-100 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md"
                 >
                   <div className="mb-4">{feature.icon}</div>
                   <h3 className="mb-2 text-lg font-semibold text-gray-900">
@@ -118,7 +137,7 @@ export default function HomePage() {
               size="lg"
               onClick={() => navigate({ to: "/survey" })}
               data-ocid="home.cta_button"
-              className="text-base bg-cyan-500 text-white hover:bg-cyan-600 font-semibold border-0"
+              className="border-0 bg-cyan-500 text-base font-semibold text-white hover:bg-cyan-600"
             >
               Launch Your First Survey
             </Button>
