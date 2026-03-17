@@ -1,32 +1,57 @@
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle2, ClipboardX } from "lucide-react";
 import { useEffect, useState } from "react";
-
-interface SurveyRecord {
-  name: string;
-  date: string;
-  time: string;
-  status: string;
-}
+import {
+  type SurveyRecord,
+  getCurrentUserId,
+  getSurveyHistoryFromSupabase,
+} from "../services/supabaseService";
 
 export default function SurveyHistoryPage() {
   const [history, setHistory] = useState<SurveyRecord[]>([]);
 
   useEffect(() => {
-    try {
-      const data = JSON.parse(
-        localStorage.getItem("surveyHistory") ?? "[]",
-      ) as SurveyRecord[];
-      setHistory(data);
-    } catch {
-      setHistory([]);
+    async function loadHistory() {
+      let localRecords: SurveyRecord[] = [];
+      try {
+        localRecords = JSON.parse(
+          localStorage.getItem("surveyHistory") ?? "[]",
+        ) as SurveyRecord[];
+      } catch {
+        localRecords = [];
+      }
+
+      try {
+        const userId = getCurrentUserId();
+        if (userId) {
+          const supabaseRecords = await getSurveyHistoryFromSupabase(userId);
+
+          if (supabaseRecords.length > 0) {
+            const seen = new Set<string>();
+            const merged: SurveyRecord[] = [];
+            for (const r of [...supabaseRecords, ...localRecords]) {
+              const key = `${r.name}|${r.date}|${r.time}`;
+              if (!seen.has(key)) {
+                seen.add(key);
+                merged.push(r);
+              }
+            }
+            setHistory(merged);
+            return;
+          }
+        }
+        setHistory(localRecords);
+      } catch {
+        setHistory(localRecords);
+      }
     }
+
+    loadHistory();
   }, []);
 
   return (
     <div className="container py-12 md:py-16">
       <div className="mx-auto max-w-5xl">
-        {/* Page header */}
         <div className="mb-8 text-center">
           <h1 className="mb-4 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
             Survey History
@@ -36,7 +61,6 @@ export default function SurveyHistoryPage() {
 
         <div className="w-full overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
           {history.length === 0 ? (
-            /* Empty state */
             <div
               data-ocid="survey_history.empty_state"
               className="flex flex-col items-center justify-center gap-4 px-6 py-24 text-center"
@@ -137,7 +161,6 @@ export default function SurveyHistoryPage() {
           )}
         </div>
 
-        {/* Record count */}
         {history.length > 0 && (
           <p className="mt-4 text-center text-sm text-gray-400">
             {history.length} survey{history.length !== 1 ? "s" : ""} completed

@@ -2,6 +2,11 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "@tanstack/react-router";
 import { CheckCircle2, ClipboardList, History } from "lucide-react";
 import { useEffect, useState } from "react";
+import {
+  addCoins,
+  getCurrentUserId,
+  saveSurveyHistory,
+} from "../services/supabaseService";
 
 interface SurveyRecord {
   name: string;
@@ -40,41 +45,32 @@ function formatTime(d: Date): string {
 }
 
 export default function SurveyPage() {
-  // surveyLoaded: true only when a real survey (e.g. CPX iframe) is confirmed present
-  // Use _setSurveyLoaded prefix to satisfy lint; uncomment CPX hooks below to wire it up
   const [surveyLoaded, _setSurveyLoaded] = useState(false);
-  // cpxReady: true only when CPX signals the user has completed the survey
   const [cpxReady, _setCpxReady] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const navigate = useNavigate();
 
+  // Redirect to login if not signed in
+  useEffect(() => {
+    if (!getCurrentUserId()) {
+      navigate({ to: "/login" });
+    }
+  }, [navigate]);
+
   // CPX INTEGRATION POINT
-  // When CPX Research iframe is ready, call setSurveyLoaded(true)
-  // Listen for CPX completion postMessage to trigger onSurveyComplete
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       // TODO: verify event.origin matches CPX domain before trusting
-      // e.g. if (event.origin !== 'https://offers.cpx-research.com') return;
-
-      // Example CPX completion signal handling:
-      // if (event.data?.type === 'cpx_survey_completed') {
-      //   setCpxReady(true);
-      // }
-
-      // Example CPX survey loaded signal:
-      // if (event.data?.type === 'cpx_survey_loaded') {
-      //   setSurveyLoaded(true);
-      // }
-
-      // Suppress unused-variable lint warning until CPX is integrated
+      // if (event.origin !== 'https://offers.cpx-research.com') return;
+      // if (event.data?.type === 'cpx_survey_completed') { setCpxReady(true); }
+      // if (event.data?.type === 'cpx_survey_loaded') { setSurveyLoaded(true); }
       void event;
     };
     window.addEventListener("message", handleMessage);
     return () => window.removeEventListener("message", handleMessage);
   }, []);
 
-  // Called only after a real CPX survey completion signal is received
-  const onSurveyComplete = () => {
+  const onSurveyComplete = async () => {
     if (!cpxReady) return;
     const now = new Date();
     const record: SurveyRecord = {
@@ -83,6 +79,8 @@ export default function SurveyPage() {
       time: formatTime(now),
       status: "Completed",
     };
+
+    // Save to localStorage
     const existing: SurveyRecord[] = (() => {
       try {
         return JSON.parse(
@@ -94,19 +92,18 @@ export default function SurveyPage() {
     })();
     existing.push(record);
     localStorage.setItem("surveyHistory", JSON.stringify(existing));
+
+    // Save to Supabase
+    const userId = getCurrentUserId();
+    if (userId) {
+      await Promise.all([
+        saveSurveyHistory(userId, record),
+        addCoins(userId, 50),
+      ]);
+    }
+
     setSubmitted(true);
   };
-
-  // CPX INTEGRATION POINT (global callbacks):
-  // Uncomment below to register global callbacks that CPX script can invoke:
-  // useEffect(() => {
-  //   window.__onCpxSurveyLoaded = () => setSurveyLoaded(true);
-  //   window.__onCpxSurveyCompleted = () => setCpxReady(true);
-  //   return () => {
-  //     delete window.__onCpxSurveyLoaded;
-  //     delete window.__onCpxSurveyCompleted;
-  //   };
-  // }, [setSurveyLoaded, setCpxReady]);
 
   return (
     <div className="container py-12 md:py-16">
@@ -122,7 +119,6 @@ export default function SurveyPage() {
 
         {/* Survey area */}
         {!surveyLoaded ? (
-          /* Placeholder shown when no real survey is loaded */
           <div
             data-ocid="survey.unavailable_state"
             className="w-full overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm"
@@ -135,12 +131,10 @@ export default function SurveyPage() {
             </div>
           </div>
         ) : (
-          /* CPX iframe area — rendered when surveyLoaded is true */
           <div className="w-full overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
             {/*
               CPX INTEGRATION POINT:
-              Replace this comment block with the CPX Research iframe.
-              Example:
+              Replace this comment with the CPX Research iframe.
               <iframe
                 width="100%"
                 frameBorder="0"
@@ -159,50 +153,45 @@ export default function SurveyPage() {
 
         {/* Submit / Success area */}
         <div className="mt-8 flex flex-col items-center gap-6">
-          {
-            submitted ? (
-              <>
-                {/* Success card — shown after real survey completion */}
-                <div
-                  data-ocid="survey.success_state"
-                  className="w-full max-w-md rounded-xl border border-emerald-100 bg-emerald-50 px-8 py-10 text-center"
-                >
-                  <div className="mb-4 flex justify-center">
-                    <CheckCircle2 className="h-16 w-16 text-emerald-500 drop-shadow-lg" />
-                  </div>
-                  <h2 className="mb-2 text-2xl font-bold text-gray-900">
-                    Survey Completed Successfully!
-                  </h2>
-                  <p className="text-base text-gray-600">
-                    Thank you for completing the survey.
-                  </p>
-                </div>
-
-                {/* View History button — only visible after completion */}
-                <Button
-                  data-ocid="survey.view_history_button"
-                  onClick={() => navigate({ to: "/survey-history" })}
-                  size="lg"
-                  className="flex items-center gap-2 border-0 bg-cyan-500 px-10 py-3 text-base font-semibold text-white transition-all duration-200 hover:bg-cyan-600"
-                >
-                  <History className="h-5 w-5" />
-                  View Survey History
-                </Button>
-              </>
-            ) : surveyLoaded ? (
-              /* Submit button — only rendered when a real survey is loaded */
-              <Button
-                data-ocid="survey.submit_button"
-                onClick={onSurveyComplete}
-                disabled={!cpxReady}
-                size="lg"
-                title={!cpxReady ? "Complete the survey to submit" : undefined}
-                className="border-0 bg-cyan-500 px-10 py-3 text-base font-semibold text-white transition-all duration-200 hover:bg-cyan-600 disabled:cursor-not-allowed disabled:opacity-50"
+          {submitted ? (
+            <>
+              <div
+                data-ocid="survey.success_state"
+                className="w-full max-w-md rounded-xl border border-emerald-100 bg-emerald-50 px-8 py-10 text-center"
               >
-                Submit Survey
+                <div className="mb-4 flex justify-center">
+                  <CheckCircle2 className="h-16 w-16 text-emerald-500 drop-shadow-lg" />
+                </div>
+                <h2 className="mb-2 text-2xl font-bold text-gray-900">
+                  Survey Completed Successfully!
+                </h2>
+                <p className="text-base text-gray-600">
+                  Thank you for completing the survey. You earned 50 coins!
+                </p>
+              </div>
+
+              <Button
+                data-ocid="survey.view_history_button"
+                onClick={() => navigate({ to: "/survey-history" })}
+                size="lg"
+                className="flex items-center gap-2 border-0 bg-cyan-500 px-10 py-3 text-base font-semibold text-white transition-all duration-200 hover:bg-cyan-600"
+              >
+                <History className="h-5 w-5" />
+                View Survey History
               </Button>
-            ) : null /* Button hidden entirely when surveyLoaded === false */
-          }
+            </>
+          ) : surveyLoaded ? (
+            <Button
+              data-ocid="survey.submit_button"
+              onClick={onSurveyComplete}
+              disabled={!cpxReady}
+              size="lg"
+              title={!cpxReady ? "Complete the survey to submit" : undefined}
+              className="border-0 bg-cyan-500 px-10 py-3 text-base font-semibold text-white transition-all duration-200 hover:bg-cyan-600 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              Submit Survey
+            </Button>
+          ) : null}
         </div>
       </div>
     </div>

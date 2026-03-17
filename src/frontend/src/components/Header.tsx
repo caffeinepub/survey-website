@@ -1,8 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { Menu, X } from "lucide-react";
+import { LogIn, LogOut, Menu, X } from "lucide-react";
 import { useState } from "react";
+import {
+  getCurrentUserId,
+  getStoredEmail,
+  signOut,
+} from "../services/supabaseService";
 
 const navItems = [
   { label: "Home", path: "/" },
@@ -18,6 +23,15 @@ export default function Header() {
   const navigate = useNavigate();
   const routerState = useRouterState();
   const currentPath = routerState.location.pathname;
+
+  const isLoggedIn = Boolean(getCurrentUserId());
+  const userEmail = getStoredEmail();
+
+  const handleLogout = async () => {
+    await signOut();
+    setIsOpen(false);
+    navigate({ to: "/login" });
+  };
 
   const handleNavigation = (path: string) => {
     navigate({ to: path });
@@ -63,14 +77,35 @@ export default function Header() {
         </nav>
 
         <div className="hidden md:flex md:items-center md:gap-4">
-          <Button
-            onClick={() => navigate({ to: "/survey" })}
-            data-ocid="nav.primary_button"
-            size="sm"
-            className="bg-cyan-500 text-white hover:bg-cyan-600 font-semibold border-0"
-          >
-            Start Survey
-          </Button>
+          {isLoggedIn ? (
+            <>
+              {userEmail && (
+                <span className="text-xs text-gray-500 max-w-[140px] truncate">
+                  {userEmail}
+                </span>
+              )}
+              <Button
+                onClick={handleLogout}
+                data-ocid="nav.logout_button"
+                size="sm"
+                variant="outline"
+                className="flex items-center gap-1.5 border-gray-300 text-gray-700 hover:bg-gray-50"
+              >
+                <LogOut className="h-4 w-4" />
+                Sign Out
+              </Button>
+            </>
+          ) : (
+            <Button
+              onClick={() => navigate({ to: "/login" })}
+              data-ocid="nav.login_button"
+              size="sm"
+              className="flex items-center gap-1.5 bg-cyan-500 text-white hover:bg-cyan-600 font-semibold border-0"
+            >
+              <LogIn className="h-4 w-4" />
+              Sign In
+            </Button>
+          )}
         </div>
 
         {/* Mobile Navigation */}
@@ -107,13 +142,33 @@ export default function Header() {
                   {item.label}
                 </button>
               ))}
-              <Button
-                onClick={() => handleNavigation("/survey")}
-                data-ocid="nav.mobile_primary_button"
-                className="mt-4 bg-cyan-500 text-white hover:bg-cyan-600 font-semibold border-0"
-              >
-                Start Survey
-              </Button>
+              {isLoggedIn ? (
+                <>
+                  {userEmail && (
+                    <p className="text-sm text-gray-400 truncate">
+                      {userEmail}
+                    </p>
+                  )}
+                  <Button
+                    onClick={handleLogout}
+                    data-ocid="nav.mobile_logout_button"
+                    variant="outline"
+                    className="mt-2 border-gray-300 text-gray-700"
+                  >
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Sign Out
+                  </Button>
+                </>
+              ) : (
+                <Button
+                  onClick={() => handleNavigation("/login")}
+                  data-ocid="nav.mobile_login_button"
+                  className="mt-4 bg-cyan-500 text-white hover:bg-cyan-600 font-semibold border-0"
+                >
+                  <LogIn className="h-4 w-4 mr-2" />
+                  Sign In
+                </Button>
+              )}
             </nav>
           </SheetContent>
         </Sheet>

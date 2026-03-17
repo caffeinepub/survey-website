@@ -10,6 +10,7 @@ import Layout from "./components/Layout";
 import AboutPage from "./pages/AboutPage";
 import ContactPage from "./pages/ContactPage";
 import HomePage from "./pages/HomePage";
+import LoginPage from "./pages/LoginPage";
 import PrivacyPage from "./pages/PrivacyPage";
 import SurveyHistoryPage from "./pages/SurveyHistoryPage";
 import SurveyPage from "./pages/SurveyPage";
@@ -22,6 +23,12 @@ const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/",
   component: HomePage,
+});
+
+const loginRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/login",
+  component: LoginPage,
 });
 
 const surveyRoute = createRoute({
@@ -56,6 +63,7 @@ const surveyHistoryRoute = createRoute({
 
 const routeTree = rootRoute.addChildren([
   indexRoute,
+  loginRoute,
   surveyRoute,
   aboutRoute,
   privacyRoute,

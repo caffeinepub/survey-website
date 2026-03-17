@@ -1,11 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "@tanstack/react-router";
-import { BarChart3, CheckCircle2, Shield, Zap } from "lucide-react";
+import { BarChart3, CheckCircle2, Coins, Shield, Zap } from "lucide-react";
 import { useEffect, useState } from "react";
+import { getCoinBalance, getCurrentUserId } from "../services/supabaseService";
 
 export default function HomePage() {
   const navigate = useNavigate();
   const [completedCount, setCompletedCount] = useState(0);
+  const [coinBalance, setCoinBalance] = useState(0);
+  const [loadingCoins, setLoadingCoins] = useState(true);
 
   useEffect(() => {
     try {
@@ -14,6 +17,21 @@ export default function HomePage() {
     } catch {
       setCompletedCount(0);
     }
+
+    async function fetchCoins() {
+      try {
+        const userId = getCurrentUserId();
+        if (userId) {
+          const coins = await getCoinBalance(userId);
+          setCoinBalance(coins);
+        }
+      } catch {
+        setCoinBalance(0);
+      } finally {
+        setLoadingCoins(false);
+      }
+    }
+    fetchCoins();
   }, []);
 
   const features = [
@@ -79,13 +97,55 @@ export default function HomePage() {
               </Button>
             </div>
 
-            {/* Dynamic survey completion count */}
             <p
               data-ocid="home.survey_count"
               className="mt-4 text-sm text-gray-400"
             >
               {completedCount} survey{completedCount !== 1 ? "s" : ""} completed
             </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Coin Wallet Dashboard Card */}
+      <section className="bg-white pb-4 pt-0">
+        <div className="container">
+          <div className="mx-auto max-w-sm">
+            <div
+              data-ocid="home.wallet_card"
+              className="rounded-xl border border-cyan-100 bg-white p-6 shadow-sm text-center"
+            >
+              <div className="mb-3 flex justify-center">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-cyan-50">
+                  <Coins className="h-6 w-6 text-cyan-500" />
+                </div>
+              </div>
+              <h3 className="mb-1 text-sm font-semibold uppercase tracking-wider text-gray-500">
+                Your Wallet
+              </h3>
+              {loadingCoins ? (
+                <p
+                  data-ocid="home.wallet_card.loading_state"
+                  className="text-sm text-gray-400"
+                >
+                  Loading…
+                </p>
+              ) : coinBalance === 0 ? (
+                <p className="text-sm text-gray-400">
+                  0 Coins — Complete surveys to earn!
+                </p>
+              ) : (
+                <>
+                  <p className="text-4xl font-bold text-cyan-500">
+                    {coinBalance}
+                  </p>
+                  <p className="mt-1 text-lg font-medium text-gray-700">
+                    = ₹{(coinBalance / 10).toFixed(2)}
+                  </p>
+                </>
+              )}
+              <p className="mt-2 text-xs text-gray-400">100 Coins = ₹10</p>
+            </div>
           </div>
         </div>
       </section>
